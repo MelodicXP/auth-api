@@ -5,8 +5,11 @@ const { users } = require('../../schemas/index-models');
 
 module.exports = async (req, res, next) => {
 
-  if (!req.headers.authorization || !req.headers.authorization.startsWith('Basic')) { 
-    return _authError(); 
+  const header = req.headers.authorization;
+  console.log('header sucessfully passed in to basic.js:', header);
+  
+  if (!req.headers.authorization || !req.headers.authorization.startsWith('Basic')) {
+    throw new Error('Missing or invalid authorization header');
   }
 
   let basicHeaderParts = req.headers.authorization.split(' '); // ['Basic', 'am9objpmb28=']

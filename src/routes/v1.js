@@ -1,12 +1,17 @@
 'use strict';
 
 const express = require('express');
+
 const dataModules = require('../schemas/index-models');
+const basicAuth = require('../../src/auth/middleware/basic.js');
 
 const router = express.Router();
 
 router.param('model', (req, res, next) => {
   const modelName = req.params.model;
+
+  console.log('modelName from v1.js:', modelName);
+
   if (dataModules[modelName]) {
     req.model = dataModules[modelName];
     next();
@@ -15,7 +20,7 @@ router.param('model', (req, res, next) => {
   }
 });
 
-router.get('/:model', handleGetAll);
+router.get('/:model', basicAuth, handleGetAll);
 router.get('/:model/:id', handleGetOne);
 router.post('/:model', handleCreate);
 router.put('/:model/:id', handleUpdate);
