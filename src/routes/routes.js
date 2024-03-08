@@ -3,7 +3,7 @@
 const express = require('express');
 const authRouter = express.Router();
 
-const { users } = require('../models/index-models.js');
+const { users } = require('../schemas/index-models.js');
 const basicAuth = require('../../src/auth/middleware/basic.js');
 const bearerAuth = require('../../src/auth/middleware/bearer.js');
 const permissions = require('../../src/auth/middleware/acl.js');

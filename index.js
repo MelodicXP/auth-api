@@ -6,7 +6,7 @@ require('dotenv').config();
 const { start } = require('./src/server.js');
 
 // Import Database
-const { db } = require('./src/models/index-models.js');
+const { db } = require('./src/schemas/index-models.js');
 
 db.sync()
   .then(() => {

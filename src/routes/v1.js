@@ -1,7 +1,7 @@
 'use strict';
 
 const express = require('express');
-const dataModules = require('../models/index-models');
+const dataModules = require('../schemas/index-models');
 
 const router = express.Router();
 

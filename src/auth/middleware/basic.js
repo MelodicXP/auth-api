@@ -1,19 +1,24 @@
 'use strict';
 
 const base64 = require('base-64');
-const { users } = require('../../models/index-models');
+const { users } = require('../../schemas/index-models');
 
 module.exports = async (req, res, next) => {
 
-  if (!req.headers.authorization) { return _authError(); }
+  if (!req.headers.authorization || !req.headers.authorization.startsWith('Basic')) { 
+    return _authError(); 
+  }
 
-  let basic = req.headers.authorization.split(' ').pop();
-  let [user, pass] = base64.decode(basic).split(':');
+  let basicHeaderParts = req.headers.authorization.split(' '); // ['Basic', 'am9objpmb28=']
+  let encodedString = basicHeaderParts.pop(); // pop 'Basic' from array now is 'am9objpmb28='
+  let decodedString = base64.decode(encodedString); // "username:password"
+  let [username, pass] = decodedString.split(':'); // username, password
 
   try {
-    req.user = await users.authenticateBasic(user, pass);
+    req.user = await users.authenticateBasic(username, pass);
     next();
   } catch (e) {
+    console.error(e);
     _authError();
   }
 

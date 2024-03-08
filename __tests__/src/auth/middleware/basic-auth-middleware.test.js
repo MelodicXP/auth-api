@@ -2,7 +2,7 @@
 
 const base64 = require('base-64');
 const middleware = require('../../../../src/auth/middleware/basic.js');
-const { sequelizeDatabase, userModel } = require('../../../../src/auth/models/index.js');
+const { db, users } = require('../../../../src/schemas/index-models.js');
 
 let userInfo = {
   admin: { username: 'admin-basic', password: 'password' },
@@ -10,11 +10,11 @@ let userInfo = {
 
 // Pre-load our database with fake users
 beforeAll(async () => {
-  await sequelizeDatabase.sync({force: true});
-  await userModel.create(userInfo.admin);
+  await db.sync({force: true});
+  await users.create(userInfo.admin);
 });
 afterAll(async () => {
-  await sequelizeDatabase.close();
+  await db.close();
 });
 
 describe('Auth Middleware', () => {

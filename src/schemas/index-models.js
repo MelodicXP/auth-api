@@ -28,12 +28,13 @@ const sequelize = new Sequelize(DATABASE_URL, DATABASE_CONFIG);
 // Initialize models
 const foodModel = foodSchema(sequelize, DataTypes);
 const clothesModel = clothesSchema(sequelize, DataTypes);
-const usersModel = usersSchema(sequelize, DataTypes); 
+const users = usersSchema(sequelize, DataTypes); 
 
 // Create a new Collection class for each model
 const food = new Collection(foodModel);
 const clothes = new Collection(clothesModel);
-const users = new Collection(usersModel);
+// TODO - work on this later
+// const users = new Collection(usersModel);
 
 module.exports = {
   db: sequelize,
