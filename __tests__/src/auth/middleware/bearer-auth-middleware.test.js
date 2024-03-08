@@ -2,7 +2,7 @@
 
 require('dotenv').config();
 const bearer = require('../../../../src/auth/middleware/bearer.js');
-const { sequelizeDatabase, userModel } = require('../../../../src/auth/models/index.js');
+const { db, users } = require('../../../../src/auth/models/index.js');
 const jwt = require('jsonwebtoken');
 const SECRET = process.env.SECRET || 'IsItSecret,IsItSafe?';
 
@@ -12,16 +12,16 @@ let userInfo = {
 
 // Pre-load our database with fake users
 beforeAll(async () => {
-  await sequelizeDatabase.sync({ force: true });
+  await db.sync({ force: true });
   try {
-    await userModel.create(userInfo.admin);
+    await users.create(userInfo.admin);
   } catch (error) {
     console.error('Error creating test user:', error);
   }
 });
 
 afterAll(async () => {
-  await sequelizeDatabase.close();
+  await db.close();
 });
 
 describe('Auth Middleware', () => {
