@@ -23,10 +23,10 @@ router.param('model', (req, res, next) => {
 });
 
 router.get('/:model', basicAuth, handleGetAll);
-router.get('/:model/:id', handleGetOne);
+router.get('/:model/:id', basicAuth, handleGetOne);
 router.post('/:model', bearerAuth, permissions('create'), handleCreate);
-router.put('/:model/:id', handleUpdate);
-router.delete('/:model/:id', handleDelete);
+router.put('/:model/:id', bearerAuth, permissions('update'), handleUpdate);
+router.delete('/:model/:id', bearerAuth, permissions('delete'), handleDelete);
 
 
 async function handleGetAll(req, res) {

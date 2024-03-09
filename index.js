@@ -8,8 +8,15 @@ const { start } = require('./src/server.js');
 // Import Database
 const { db } = require('./src/schemas/index-models.js');
 
-db.sync()
-  .then(() => {
+async function initializeApp() {
+  try {
+    await db.sync(); // Wait for the database to sync
     console.log('Successful Connection!');
-    start();
-  });
+    start(); // Start the server
+  } catch (error) {
+    console.error('Failed to start the application:', error);
+  }
+}
+
+// Call function
+initializeApp();

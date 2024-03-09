@@ -10,26 +10,31 @@ class DataCollection {
     this.model = model;
   }
 
-  get(id) {
+  async get(id) {
     if (id) {
-      return this.model.findOne({ where: { id } });
+      // Await until findOne is resolved
+      return await this.model.findOne({ where: { id } });
     }
     else {
-      return this.model.findAll({});
+      // Await until find all is resolved
+      return await this.model.findAll({});
     }
   }
 
-  create(record) {
-    return this.model.create(record);
+  async create(record) {
+    // Await until create is resolved
+    return await this.model.create(record);
   }
 
-  update(id, data) {
-    return this.model.findOne({ where: { id } })
-      .then(record => record.update(data));
+  async update(id, data) {
+    // First await until findone is resolved
+    const record = await this.model.findOne({ where: { id } });
+    // Then await update to resolve
+    return await record.update(data);
   }
 
-  delete(id) {
-    return this.model.destroy({ where: { id }});
+  async delete(id) {
+    return await this.model.destroy({ where: { id }});
   }
 
 }

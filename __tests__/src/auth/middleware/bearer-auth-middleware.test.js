@@ -38,18 +38,18 @@ describe('Auth Middleware', () => {
 
   describe('user authentication', () => {
 
-    it('fails a login for a user (admin) with an incorrect token', () => {
+    it('fails a login for a user (admin) with an incorrect token', async () => {
 
       req.headers = {
         authorization: 'Bearer thisisabadtoken',
       };
 
-      return bearer(req, res, next)
-        .then(() => {
-          expect(next).not.toHaveBeenCalled();
-          expect(res.status).toHaveBeenCalledWith(403);
-        });
+      // Await middleware to complete execution
+      await bearer(req, res, next);
 
+      // After middlware has awaited, proceed with expectations
+      expect(next).not.toHaveBeenCalled();
+      expect(res.status).toHaveBeenCalledWith(403);
     });
 
     it('logs in a user with a proper token', async() => {
