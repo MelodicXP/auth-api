@@ -13,8 +13,11 @@ module.exports = async (req, res, next) => {
   }
 
   let basicHeaderParts = req.headers.authorization.split(' '); // ['Basic', 'am9objpmb28=']
+  console.log('basic header parts', basicHeaderParts);
   let encodedString = basicHeaderParts.pop(); // pop 'Basic' from array now is 'am9objpmb28='
+  console.log('encodedString', encodedString);
   let decodedString = base64.decode(encodedString); // "username:password"
+  console.log('decodedString', decodedString);
   let [username, pass] = decodedString.split(':'); // username, password
 
   try {
