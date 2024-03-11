@@ -79,8 +79,7 @@ describe('ACL Integration', () => {
       .set('Authorization', `Bearer ${testWriter.token}`)
       .send(updatedFoodItem);
 
-    expect(response.status).toEqual(500);
-    console.log('this is response from update', response.body);
+    expect(response.status).toEqual(403);
     expect(response.body.message).toEqual('Access Denied');
   });
 
@@ -91,7 +90,7 @@ describe('ACL Integration', () => {
       .delete(`/api/v2/food/${createdFoodItemId}`)
       .set('Authorization', `Bearer ${testWriter.token}`);
 
-    expect(response.status).toEqual(500);
+    expect(response.status).toEqual(403);
     expect(response.body.message).toEqual('Access Denied');
   });
 });

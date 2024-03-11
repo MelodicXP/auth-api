@@ -11,12 +11,15 @@
 
 module.exports = function (err, req, res, next) {
 
+  // Check if the error object has a status code set; otherwise, default to 500
+  const statusCode = err.status || 500;
+
   // Sometimes, errors come in as an object, others as a string
-  const error = err.message ? err.message : err;
+  const errorMessage = err.message ? err.message : err;
 
   const errorObject = {
-    status: 500,
-    message: error,
+    status: statusCode,
+    message: errorMessage,
   };
-  res.status(500).json(errorObject);
+  res.status(statusCode).json(errorObject);
 };
