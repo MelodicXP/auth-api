@@ -33,6 +33,12 @@ app.use(authRoutes);
 app.use('/api/v1', v1Routes);
 app.use('/api/v2', v2Routes);
 
+// Establish default route
+app.get('/', (req, res, next) => {
+  const message = 'Default route message';
+  res.status(200).send(message);
+});
+
 // Catchalls
 app.use('*', notFoundHandler);
 app.use(errorHandler);
