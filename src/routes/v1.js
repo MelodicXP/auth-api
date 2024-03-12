@@ -9,8 +9,6 @@ const router = express.Router();
 router.param('model', (req, res, next) => {
   const modelName = req.params.model;
 
-  console.log('modelName from v1.js:', modelName);
-
   if (dataModules[modelName]) {
     req.model = dataModules[modelName];
     next();

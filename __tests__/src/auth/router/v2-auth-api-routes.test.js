@@ -145,8 +145,6 @@ describe('ACL Integration', () => {
         .get('/api/v2/food')
         .set('Authorization', authHeader);
 
-      console.log('--------------------------------- from read', user);
-
       expect(response.status).toEqual(200);
       expect(Array.isArray(response.body)).toBe(true); // Check if response body is an array
       expect(response.body.length).toBeGreaterThan(0);
@@ -163,8 +161,6 @@ describe('ACL Integration', () => {
       let response = await request
         .get(`/api/v2/food/${createdFoodItemId}`)
         .set('Authorization', authHeader);
-
-      console.log('--------------------------------- from read', user);
 
       expect(response.status).toEqual(200);
       expect(Array.isArray(response.body)).toBe(false); // Check if response body is an array

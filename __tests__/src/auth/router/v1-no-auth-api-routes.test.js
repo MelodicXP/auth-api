@@ -148,8 +148,6 @@ describe('V1 UnAuthenticated API routes All roles have CRUD capablities', () => 
         .get('/api/v1/food')
         .set('Authorization', authHeader);
 
-      console.log('--------------------------------- from read', user);
-
       expect(response.status).toEqual(200);
       expect(Array.isArray(response.body)).toBe(true); // Check if response body is an array
       expect(response.body.length).toBeGreaterThan(0);
@@ -166,8 +164,6 @@ describe('V1 UnAuthenticated API routes All roles have CRUD capablities', () => 
       let response = await request
         .get(`/api/v1/food/${createdFoodItemIds[3]}`)
         .set('Authorization', authHeader);
-
-      console.log('--------------------------------- from read', user);
 
       expect(response.status).toEqual(200);
       expect(Array.isArray(response.body)).toBe(false); // Check if response body is an array
