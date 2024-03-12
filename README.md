@@ -17,7 +17,7 @@ Extend the restrictive capabilities of our routes to our API, implementing a ful
 
 - [Pull Request](https://github.com/MelodicXP/auth-api/pulls)
 - [GitHub Actions ci/cd](https://github.com/MelodicXP/auth-api/actions)
-- Prod [back-end server url](https://four01lab07bearer-auth.onrender.com)
+- Prod [back-end server url](https://auth-api-1n5k.onrender.com)
 
 ### Collaborators
 
@@ -49,11 +49,23 @@ DATABASE_URL: postgres://localhost:XXXX/name-of-server
   - POST to /signin to login as a user (use basic auth).
   - Tests for auth middleware and routes.
 
-- Your linter is helpful!
-- Running tests one at a time might be helpful.
-- You will see some false failures in the terminal because each test does not necessarily test the entire system.
-- Finding the actual failure in the terminal can lead you to the correct line of problematic code.
-- Can AI be helpful? Integration tests rely on more than one unit of code. If asking AI for help, be sure to give AI all of the necessary context.
+- AUTH Routes:
+  - POST /signup creates a new user and sends an object with the user and the token to the client.
+  - POST /signin with basic authentication headers logs in a user and sends an object with the user and the token to the client.
+
+- V1 (Unauthenticated API) routes:
+  - POST /api/v1/:model adds an item to the DB and returns an object with the added item.
+  - GET /api/v1/:model returns a list of :model items.
+  - GET /api/v1/:model/ID returns a single item by ID.
+  - PUT /api/v1/:model/ID returns a single, updated item by ID.
+  - DELETE /api/v1/:model/ID returns an empty object. Subsequent GET for the same ID should result in nothing found.  
+
+- V2 (Authenticated API) routes:
+  - POST /api/v2/:model with a bearer token that has create permissions adds an item to the DB and returns an object with the added item.
+  - GET /api/v2/:model with a bearer token that has read permissions returns a list of :model items.
+  - GET /api/v2/:model/ID with a bearer token that has read permissions returns a single item by ID.
+  - PUT /api/v2/:model/ID with a bearer token that has update permissions returns a single, updated item by ID.
+  - DELETE /api/v2/:model/ID with a bearer token that has delete permissions returns an empty object. Subsequent GET for the same ID should result in nothing found.
 
 #### UML
 
