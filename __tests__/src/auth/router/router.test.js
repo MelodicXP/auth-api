@@ -2,26 +2,34 @@
 
 const { app } = require('../../../../src/server.js');
 const supertest = require('supertest');
-const { sequelizeDatabase } = require('../../../../src/auth/models');
+const { db, users } = require('../../../../src/schemas/index-models.js');
 const mockRequest = supertest(app);
 
 // Define test user data
+let testAdmin;
 let userData = {
   testUser: { username: 'user', password: 'password' },
+
 };
 let accessToken = null;
 
 beforeAll(async () => {
-  await sequelizeDatabase.sync({force: true});
+  await db.sync({force: true});
+  // Create admin user for delete test
+  testAdmin = await users.create({
+    username: 'TestAdmin',
+    password: 'pass123',
+    role: 'admin',
+  });
 });
 
 afterAll(async () => {
-  await sequelizeDatabase.close();
+  await db.close();
 });
 
 describe('Auth Router', () => {
 
-  it('Can create a new user', async () => {
+  it('can create a new user', async () => {
 
     const response = await mockRequest.post('/signup').send(userData.testUser);
     const userObject = response.body;
@@ -32,10 +40,11 @@ describe('Auth Router', () => {
     expect(userObject.user.username).toEqual(userData.testUser.username);
   });
 
-  it('Can signin with basic auth string', async () => {
+  it('can signin with basic auth string', async () => {
     let { username, password } = userData.testUser;
 
-    const response = await mockRequest.post('/signin')
+    const response = await mockRequest
+      .post('/signin')
       .auth(username, password);
 
     const userObject = response.body;
@@ -45,50 +54,51 @@ describe('Auth Router', () => {
     expect(userObject.user.username).toEqual(username);
   });
 
-  it('Can signin with bearer auth token', async () => {
-    let { username, password } = userData.testUser;
+  it('GETS users with a valid token and delete permission', async () => {
 
-    // First, use basic to login to get a token
-    const response = await mockRequest.post('/signin')
-      .auth(username, password);
-
-    accessToken = response.body.token;
-    console.log('AccessToken from router.test.js: ', accessToken);
-
-    // First, use basic to login to get a token
-    const bearerResponse = await mockRequest
+    const response = await mockRequest
       .get('/users')
-      .set('Authorization', `Bearer ${accessToken}`);
+      .set('Authorization', `Bearer ${testAdmin.token}`);
 
-    // Not checking the value of the response, only that we "got in"
-    expect(bearerResponse.status).toBe(200);
+    expect(response.status).toBe(200);
+    expect(response.body).toBeTruthy();
+    expect(response.body).toEqual(expect.anything());
   });
 
-  it('basic fails with known user and wrong password ', async () => {
+  it('can access secret Route with valid token', async () => {
+    const response = await mockRequest
+      .get('/secret')
+      .set('Authorization', `Bearer ${testAdmin.token}`);
 
-    const response = await mockRequest.post('/signin')
+    expect(response.status).toBe(200);
+  });
+
+  it('verfies basic auth fails with known user and wrong password ', async () => {
+
+    const response = await mockRequest
+      .post('/signin')
       .auth('admin', 'xyz');
     const { user, token } = response.body;
 
     expect(response.status).toBe(403);
-    expect(response.text).toEqual('Invalid Login');
+    expect(response.body.message).toEqual('Invalid Login');
     expect(user).not.toBeDefined();
     expect(token).not.toBeDefined();
   });
 
-  it('basic fails with unknown user', async () => {
+  it('verifies basic auth fails with unknown user', async () => {
 
     const response = await mockRequest.post('/signin')
       .auth('nobody', 'xyz');
     const { user, token } = response.body;
 
     expect(response.status).toBe(403);
-    expect(response.text).toEqual('Invalid Login');
+    expect(response.body.message).toEqual('Invalid Login');
     expect(user).not.toBeDefined();
     expect(token).not.toBeDefined();
   });
 
-  it('bearer fails with an invalid token', async () => {
+  it('verifies bearer auth fails with an invalid token', async () => {
 
     // First, use basic to login to get a token
     const response = await mockRequest.get('/users')
@@ -97,25 +107,16 @@ describe('Auth Router', () => {
 
     // Not checking the value of the response, only that we "got in"
     expect(response.status).toBe(403);
-    expect(response.text).toEqual('Invalid Login');
+    expect(response.body.message).toEqual('Invalid Login');
     expect(userList.length).toBeFalsy();
   });
 
-  it('Succeeds with a valid token', async () => {
-
-    const response = await mockRequest.get('/users')
-      .set('Authorization', `Bearer ${accessToken}`);
-
-    expect(response.status).toBe(200);
-    expect(response.body).toBeTruthy();
-    expect(response.body).toEqual(expect.anything());
-  });
-
-  it('Secret Route fails with invalid token', async () => {
-    const response = await mockRequest.get('/secret')
+  it('deny Secret Route access with invalid token', async () => {
+    const response = await mockRequest
+      .get('/secret')
       .set('Authorization', `bearer accessgranted`);
 
     expect(response.status).toBe(403);
-    expect(response.body.error).toEqual('Invalid Login');
+    expect(response.body.message).toEqual('Invalid Login');
   });
 });

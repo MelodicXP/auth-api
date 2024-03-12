@@ -10,15 +10,17 @@ module.exports = async (req, res, next) => {
 
     const token = req.headers.authorization.split(' ').pop();
     const validUser = await users.authenticateToken(token);
+    if (!validUser) { return _authError(res); }
+
     req.user = validUser;
     req.token = validUser.token;
     next();
 
   } catch (e) {
-    _authError();
+    _authError(res);
   }
 
   function _authError() {
-    next('Invalid Login');
+    res.status(403).json({ message: 'Invalid Login'});
   }
 };
