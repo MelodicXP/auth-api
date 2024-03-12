@@ -2,7 +2,7 @@
 
 const base64 = require('base-64');
 const middleware = require('../../../../src/auth/middleware/basic.js');
-const { sequelizeDatabase, userModel } = require('../../../../src/auth/models/index.js');
+const { db, users } = require('../../../../src/schemas/index-models.js');
 
 let userInfo = {
   admin: { username: 'admin-basic', password: 'password' },
@@ -10,11 +10,11 @@ let userInfo = {
 
 // Pre-load our database with fake users
 beforeAll(async () => {
-  await sequelizeDatabase.sync({force: true});
-  await userModel.create(userInfo.admin);
+  await db.sync({force: true});
+  await users.create(userInfo.admin);
 });
 afterAll(async () => {
-  await sequelizeDatabase.close();
+  await db.close();
 });
 
 describe('Auth Middleware', () => {
@@ -27,12 +27,14 @@ describe('Auth Middleware', () => {
   const res = {
     status: jest.fn(() => res),
     send: jest.fn(() => res),
+    json: jest.fn(() => res),
   };
+
   const next = jest.fn();
 
   describe('user authentication', () => {
 
-    it('fails a login for a user (admin) with the incorrect basic credentials', () => {
+    it('fails a login for a user (admin) with the incorrect basic credentials', async () => {
       const basicAuthString = base64.encode('username:password');
 
       // Change the request to match this test case
@@ -40,15 +42,15 @@ describe('Auth Middleware', () => {
         authorization: `Basic ${basicAuthString}`,
       };
 
-      return middleware(req, res, next)
-        .then(() => {
-          expect(next).not.toHaveBeenCalled();
-          expect(res.status).toHaveBeenCalledWith(403);
-        });
+      // Await middleware to complete execution
+      await middleware(req, res, next);
 
+      // After middlware has awaited, proceed with expectations
+      expect(res.status).toHaveBeenCalledWith(403);
+      expect(res.json).toHaveBeenCalledWith({ message: 'Invalid Login' });
     });
 
-    it('logs in an admin user with the right credentials', () => {
+    it('logs in an admin user with the right credentials', async () => {
       let basicAuthString = base64.encode(`${userInfo.admin.username}:${userInfo.admin.password}`);
 
       // Change the request to match this test case
@@ -56,11 +58,11 @@ describe('Auth Middleware', () => {
         authorization: `Basic ${basicAuthString}`,
       };
 
-      return middleware(req, res, next)
-        .then(() => {
-          expect(next).toHaveBeenCalledWith();
-        });
-
+      // Await middleware to complete execution
+      await middleware(req, res, next);
+      
+      // After middlware has awaited, proceed with expectations
+      expect(next).toHaveBeenCalledWith();
     });
   });
 });

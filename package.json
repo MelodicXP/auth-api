@@ -3,7 +3,6 @@
   "description": "401 Lab 08",
   "version": "1.0.0",
   "main": "index.js",
-  "devDependencies": {},
   "scripts": {
     "start": "node index.js",
     "watch": "nodemon index.js",

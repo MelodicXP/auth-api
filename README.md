@@ -15,8 +15,8 @@ Extend the restrictive capabilities of our routes to our API, implementing a ful
 
 ### Links and Resources
 
-- [Pull Request](https://github.com/MelodicXP/bearer-auth/pulls)
-- [GitHub Actions ci/cd](https://github.com/MelodicXP/bearer-auth/actions)
+- [Pull Request](https://github.com/MelodicXP/auth-api/pulls)
+- [GitHub Actions ci/cd](https://github.com/MelodicXP/auth-api/actions)
 - Prod [back-end server url](https://four01lab07bearer-auth.onrender.com)
 
 ### Collaborators
@@ -57,5 +57,5 @@ DATABASE_URL: postgres://localhost:XXXX/name-of-server
 
 #### UML
 
-![Lab-07-UML](./assets/bearerAuthUMLFileStruct.excalidraw.png)
-![Lab-07-UML-File-Structure](./assets/bearerAuthUML.png)
+![Lab-08-UML](./assets/auth-api-UML.png)
+![Lab-08-UML-File-Structure](./assets/lab-08-file-structure.png)
