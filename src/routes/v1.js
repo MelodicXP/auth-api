@@ -49,10 +49,14 @@ async function handleUpdate(req, res) {
   res.status(200).json(updatedRecord);
 }
 
-async function handleDelete(req, res) {
+async function handleDelete(req, res, next) {
   let id = req.params.id;
-  let deletedRecord = await req.model.delete(id);
-  res.status(200).json(deletedRecord);
+  try {
+    await req.model.delete(id);
+    res.status(200).json({ message: `Record ${id} deleted`});
+  } catch (error) {
+    next(error); // Pass errors to error handling middleware
+  }
 }
 
 

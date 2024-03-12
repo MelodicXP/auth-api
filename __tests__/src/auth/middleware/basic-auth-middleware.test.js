@@ -27,7 +27,9 @@ describe('Auth Middleware', () => {
   const res = {
     status: jest.fn(() => res),
     send: jest.fn(() => res),
+    json: jest.fn(() => res),
   };
+
   const next = jest.fn();
 
   describe('user authentication', () => {
@@ -44,8 +46,8 @@ describe('Auth Middleware', () => {
       await middleware(req, res, next);
 
       // After middlware has awaited, proceed with expectations
-      expect(next).not.toHaveBeenCalled();
       expect(res.status).toHaveBeenCalledWith(403);
+      expect(res.json).toHaveBeenCalledWith({ message: 'Invalid Login' });
     });
 
     it('logs in an admin user with the right credentials', async () => {

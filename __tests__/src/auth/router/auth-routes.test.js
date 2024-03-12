@@ -9,9 +9,7 @@ const mockRequest = supertest(app);
 let testAdmin;
 let userData = {
   testUser: { username: 'user', password: 'password' },
-
 };
-let accessToken = null;
 
 beforeAll(async () => {
   await db.sync({force: true});

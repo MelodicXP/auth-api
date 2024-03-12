@@ -2,7 +2,7 @@
 
 require('dotenv').config();
 const bearer = require('../../../../src/auth/middleware/bearer.js');
-const { db, users } = require('../../../../src/auth/models/index.js');
+const { db, users } = require('../../../../src/schemas/index-models.js');
 const jwt = require('jsonwebtoken');
 const SECRET = process.env.SECRET || 'IsItSecret,IsItSafe?';
 
