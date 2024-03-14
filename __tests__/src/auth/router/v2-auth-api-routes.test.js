@@ -4,7 +4,6 @@ const { app } = require('../../../../src/server.js');
 const { db, users } = require('../../../../src/schemas/index-models.js');
 const supertest = require('supertest');
 const request = supertest(app);
-const base64 = require('base-64');
 
 let createdFoodItemId;
 let testUser, testWriter, testEditor, testAdmin;
@@ -47,14 +46,6 @@ afterAll(async () => {
 });
 
 describe('ACL Integration', () => {
-
-  // use login credential established for each user (to be used for header info when running tests)
-  const users = [
-    { role: 'user', username: 'TestUser', password: 'pass123' },
-    { role: 'writer', username: 'TestWriter', password: 'pass123' },
-    { role: 'editor', username: 'TestEditor', password: 'pass123' },
-    { role: 'admin', username: 'TestAdmin', password: 'pass123' },
-  ];
 
   it('verfies Writer can CREATE', async () => {
     // Food Item to be created
