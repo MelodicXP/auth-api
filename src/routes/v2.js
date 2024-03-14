@@ -3,7 +3,7 @@
 const express = require('express');
 
 const dataModules = require('../schemas/index-models');
-const basicAuth = require('../../src/auth/middleware/basic.js');
+// const basicAuth = require('../../src/auth/middleware/basic.js');
 const bearerAuth = require('../../src/auth/middleware/bearer.js');
 const permissions = require('../auth/middleware/acl.js');
 
@@ -20,8 +20,8 @@ router.param('model', (req, res, next) => {
   }
 });
 
-router.get('/:model', basicAuth, handleGetAll);
-router.get('/:model/:id', basicAuth, handleGetOne);
+router.get('/:model', bearerAuth, handleGetAll);
+router.get('/:model/:id', bearerAuth, handleGetOne);
 router.post('/:model', bearerAuth, permissions('create'), handleCreate);
 router.put('/:model/:id', bearerAuth, permissions('update'), handleUpdate);
 router.delete('/:model/:id', bearerAuth, permissions('delete'), handleDelete);

@@ -8,6 +8,7 @@ const base64 = require('base-64');
 
 let createdFoodItemId;
 let testUser, testWriter, testEditor, testAdmin;
+let createdUsers = [];
 
 // Pre-load database with fake users
 beforeAll(async () => {
@@ -37,6 +38,8 @@ beforeAll(async () => {
     password: 'pass123',
     role: 'admin',
   });
+
+  createdUsers.push(testUser, testWriter, testEditor, testAdmin);
 });
 
 afterAll(async () => {
@@ -135,10 +138,11 @@ describe('ACL Integration', () => {
   });
 
   it('verifies ALL Users can READ', async () => {
-    for (const user of users) {
+    for (const user of createdUsers) {
       // Create Basic Auth Header(username and password only needed to read)
-      const credentials = base64.encode(`${user.username}:${user.password}`);
-      const authHeader = `Basic ${credentials}`;
+      // const credentials = base64.encode(`${user.username}:${user.password}`);
+      console.log('user token from test', user.token);
+      const authHeader = `Bearer ${user.token}`;
 
       // Set Authorization header
       let response = await request
@@ -152,10 +156,10 @@ describe('ACL Integration', () => {
   });
 
   it('verifies ALL Users can READ one item', async () => {
-    for (const user of users) {
+    for (const user of createdUsers) {
       // Create Basic Auth Header(username and password only needed to read)
-      const credentials = base64.encode(`${user.username}:${user.password}`);
-      const authHeader = `Basic ${credentials}`;
+      // const credentials = base64.encode(`${user.username}:${user.password}`);
+      const authHeader = `Bearer ${user.token}`;
 
       // Set Authorization header
       let response = await request
